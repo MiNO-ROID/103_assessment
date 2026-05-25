@@ -1,5 +1,6 @@
 #include <iostream>
 #include "menu.h"
+#include "session.h"
 using namespace std;
 
 int main() {
@@ -21,14 +22,14 @@ int main() {
             case 3:
                 adminLogin();
                 break;
-            case 0:
+            case 4:
                 cout << "\033[36m" << "     Goodbye! Thank you for visiting Skyline.\n" << "\033[0m";
                 break;
             default:
                 cout << "\033[31m" << "     Invalid choice. Please try again.\n" << "\033[0m";
         }
         cout << "\n";
-    } while (choice != 0);
+    } while (choice != 4);
 
     return 0;
 }

@@ -3,6 +3,7 @@
 #include <string>
 #include <windows.h>
 using namespace std;
+
 void enableColor() {
     SetConsoleOutputCP(CP_UTF8);
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);

@@ -5,4 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(103_assessment main.cpp
         menu.h
-        menu.cpp)
+        menu.cpp
+        session.h
+        session.cpp)
