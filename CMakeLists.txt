@@ -3,8 +3,8 @@ project(103_assessment)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(103_assessment main.cpp
-        menu.h
+add_executable(103_assessment
+        main.cpp
         menu.cpp
-        session.h
-        session.cpp)
+        termcolor.hpp
+)
