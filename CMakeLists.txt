@@ -6,4 +6,5 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(103_assessment
         main.cpp
         menu.cpp
+        termcolor.hpp
 )

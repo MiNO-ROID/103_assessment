@@ -1,16 +1,18 @@
 #include <iostream>
 #include "menu.h"
+#include "termcolor.hpp"
+
 using namespace std;
 
 int main() {
-    enableColor();
-
     int choice;
+
     do {
         showMenu();
         cin >> choice;
 
-        cout << "\n";
+        cout << "\n\n";
+
         switch (choice) {
             case 1:
                 registerUser();
@@ -22,12 +24,19 @@ int main() {
                 adminLogin();
                 break;
             case 4:
-                cout << "\033[36m" << "     Goodbye! Thank you for visiting Skyline.\n" << "\033[0m";
+                cout << termcolor::cyan
+                     << "                    Goodbye! Thank you for visiting Skyline.\n"
+                     << termcolor::reset;
                 break;
             default:
-                cout << "\033[31m" << "     Invalid choice. Please try again.\n" << "\033[0m";
+                cout << termcolor::red
+                     << "                      Invalid choice. Please try again.\n"
+                     << termcolor::reset;
+                break;
         }
+
         cout << "\n";
+
     } while (choice != 4);
 
     return 0;
