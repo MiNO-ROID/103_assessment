@@ -7,4 +7,6 @@ add_executable(103_assessment
         main.cpp
         menu.cpp
         termcolor.hpp
+        session.h
+        session.cpp
 )

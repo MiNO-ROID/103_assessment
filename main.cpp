@@ -1,6 +1,7 @@
 #include <iostream>
 #include "menu.h"
 #include "termcolor.hpp"
+#include "session.h"
 
 using namespace std;
 
@@ -29,9 +30,10 @@ int main() {
                      << termcolor::reset;
                 break;
             default:
-                cout << termcolor::red
-                     << "                      Invalid choice. Please try again.\n"
+                cout << termcolor::cyan
+                     << "                    Goodbye! Thank you for visiting Skyline.\n"
                      << termcolor::reset;
+                choice = 4;
                 break;
         }
 

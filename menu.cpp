@@ -47,8 +47,8 @@ void showTitle() {
 
     cout << "\n";
     cout << termcolor::yellow;
-    printCentered("Cyber Cafe");
-    printCentered("Auckland CBD");
+    printCentered("----Cyber Cafe----");
+    printCentered("~Auckland CBD~");
 
     cout << "\n";
     cout << termcolor::cyan;
@@ -95,4 +95,4 @@ void adminLogin() {
     cout << termcolor::yellow;
     printCentered("[Admin Login - coming soon]");
     cout << termcolor::reset << "\n";
-}
+    }
