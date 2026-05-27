@@ -1,4 +1,6 @@
 #include <iostream>
+
+#include "logout.h"
 #include "menu.h"
 #include "termcolor.hpp"
 #include "session.h"

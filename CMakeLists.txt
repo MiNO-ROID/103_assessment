@@ -9,4 +9,6 @@ add_executable(103_assessment
         termcolor.hpp
         session.h
         session.cpp
+        logout.h
+        logout.cpp
 )
