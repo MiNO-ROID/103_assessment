@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <vector>
 #include "menu.h"
 #include "termcolor.hpp"
 
@@ -29,21 +28,14 @@ void printCenteredNoEnd(const string& text) {
 }
 
 void showTitle() {
-    vector<string> logo = {
-        " _____ _  __ __      __ _      _____ _    _ ______ ",
-        "// ____ | |/ /\\\\ \\\\   / / |    |_   _| \\\\ | |  ____|",
-        "|| (___ | ' /  \\\\ \\\\_/ /| |      | | |  \\\\| | |__   ",
-        "\\\\___\\\\|   <    \\\\   / | |       | | |  . ` |  __|  ",
-        " ____) || . \\\\     | |  | |____ _| |_| |\\\\  | |____ ",
-        "|_____/ |_|\\\\_\\\\   |_|  |______|_____|_| \\\\_|______|"
-    };
+    string blah = R"(
+                        ___ _  ____   ___    ___ _  _ ___
+                       / __| |/ /\ \ / / |  |_ _| \| | __|
+                       \__ \ ' <  \ V /| |__ | || .` | _|
+                       |___/_|\_\  |_| |____|___|_|\_|___|
+)";
 
-    cout << "\n";
-    cout << termcolor::cyan;
-
-    for (const string& row : logo) {
-        printCentered(row);
-    }
+    cout << termcolor::cyan << blah << termcolor::reset << endl;
 
     cout << "\n";
     cout << termcolor::yellow;
@@ -95,4 +87,4 @@ void adminLogin() {
     cout << termcolor::yellow;
     printCentered("[Admin Login - coming soon]");
     cout << termcolor::reset << "\n";
-    }
+}
