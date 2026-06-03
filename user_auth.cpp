@@ -5,7 +5,7 @@
 #include <string>
 #include "user_auth.h"
 
-const std::string USER_FILE = "users.csv";
+const std::string USER_FILE = "../users.csv";
 
 namespace auth {
 

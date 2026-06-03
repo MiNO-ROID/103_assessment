@@ -26,7 +26,7 @@ namespace sessions {
     }
 
     void saveSession(const SessionRecord& record) {
-        // Check if file is empty to write header
+        // Check if file empty to write header
         std::ifstream check(SESSION_FILE);
         bool isEmpty = check.peek() == std::ifstream::traits_type::eof();
         check.close();
