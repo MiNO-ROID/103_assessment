@@ -11,4 +11,6 @@ add_executable(103_assessment
         session.cpp
         logout.h
         logout.cpp
+        user_auth.h
+        user_auth.cpp
 )
