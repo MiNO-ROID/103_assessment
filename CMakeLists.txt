@@ -16,6 +16,8 @@ add_executable(103_assessment
         session_manager.cpp
         admin_auth.h
         admin_auth.cpp
+        admin_menu.h
+        admin_menu.cpp
         termcolor.hpp
 )
 
