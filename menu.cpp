@@ -4,6 +4,7 @@
 #include "termcolor.hpp"
 #include "user_auth.h"
 #include "session.h"
+#include "admin_auth.h"
 
 using namespace std;
 
@@ -111,8 +112,30 @@ void loginUser() {
 }
 
 void adminLogin() {
+    string username, password;
+
     cout << "\n";
-    cout << termcolor::yellow;
-    printCentered("[Admin Login - coming soon]");
+    cout << termcolor::cyan;
+    printCentered("===== ADMIN LOGIN =====");
     cout << termcolor::reset << "\n";
+
+    printCenteredNoEnd("Enter admin username: ");
+    cin >> username;
+
+    printCenteredNoEnd("Enter admin password: ");
+    cin >> password;
+
+    if (adminauth::loginAdmin(username, password)) {
+        cout << termcolor::green;
+        printCentered("Admin login successful! Welcome, " + username + "!");
+        cout << termcolor::reset << "\n";
+        // Admin menu coming soon
+        cout << termcolor::yellow;
+        printCentered("[Admin menu - coming soon]");
+        cout << termcolor::reset << "\n";
+    } else {
+        cout << termcolor::red;
+        printCentered("Invalid admin credentials. Access denied.");
+        cout << termcolor::reset << "\n";
+    }
 }

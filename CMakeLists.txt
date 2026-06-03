@@ -14,7 +14,10 @@ add_executable(103_assessment
         user_auth.cpp
         session_manager.h
         session_manager.cpp
+        admin_auth.h
+        admin_auth.cpp
         termcolor.hpp
 )
 
 configure_file(users.csv users.csv COPYONLY)
+configure_file(admin.csv admin.csv COPYONLY)
