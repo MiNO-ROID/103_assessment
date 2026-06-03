@@ -5,6 +5,7 @@
 #include "user_auth.h"
 #include "session.h"
 #include "admin_auth.h"
+#include "admin_menu.h"
 
 using namespace std;
 
@@ -129,10 +130,7 @@ void adminLogin() {
         cout << termcolor::green;
         printCentered("Admin login successful! Welcome, " + username + "!");
         cout << termcolor::reset << "\n";
-        // Admin menu coming soon
-        cout << termcolor::yellow;
-        printCentered("[Admin menu - coming soon]");
-        cout << termcolor::reset << "\n";
+        adminmenu::showAdminMenu(username);
     } else {
         cout << termcolor::red;
         printCentered("Invalid admin credentials. Access denied.");

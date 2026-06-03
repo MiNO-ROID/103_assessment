@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 namespace auth {
     struct User {
@@ -8,6 +9,8 @@ namespace auth {
         double balance;
     };
 
+    std::vector<User> loadUsers();
+    void saveUsers(const std::vector<User>& users);
     bool registerUser(const std::string& username, const std::string& password);
     bool loginUser(const std::string& username, const std::string& password, User& outUser);
 }
