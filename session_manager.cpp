@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <ctime>
+#include <iomanip>
 #include "session_manager.h"
 #include "termcolor.hpp"
 
@@ -25,109 +26,162 @@ namespace sessions {
         return std::string(buf);
     }
 
+    std::string formatMoney(double amount) {
+        std::ostringstream ss;
+        ss << std::fixed << std::setprecision(2) << amount;
+        return "$" + ss.str();
+    }
+
     void saveSession(const SessionRecord& record) {
-        // Check if file empty to write header
         std::ifstream check(SESSION_FILE);
         bool isEmpty = check.peek() == std::ifstream::traits_type::eof();
         check.close();
 
         std::ofstream file(SESSION_FILE, std::ios::app);
-        if (isEmpty) {
-            file << "username,minutes,cost,date\n";
-        }
+        if (isEmpty) file << "username,date,totalCost,services\n";
+
         file << record.username << ","
-             << record.minutes << ","
-             << record.cost << ","
-             << record.date << "\n";
-    }
+             << record.date << ","
+             << std::fixed << std::setprecision(2) << record.totalCost << ",";
 
-    std::vector<SessionRecord> loadSessions(const std::string& username) {
-        std::vector<SessionRecord> records;
-        std::ifstream file(SESSION_FILE);
-        std::string line;
-
-        std::getline(file, line); // skip header
-
-        while (std::getline(file, line)) {
-            std::stringstream ss(line);
-            std::string uname, minsStr, costStr, date;
-
-            std::getline(ss, uname, ',');
-            std::getline(ss, minsStr, ',');
-            std::getline(ss, costStr, ',');
-            std::getline(ss, date, ',');
-
-            if (uname == username) {
-                records.push_back({uname, std::stoi(minsStr), std::stod(costStr), date});
-            }
+        for (size_t i = 0; i < record.services.size(); ++i) {
+            const auto& s = record.services[i];
+            file << s.name << "|" << s.minutes << "|"
+                 << std::fixed << std::setprecision(2) << s.cost;
+            if (i + 1 < record.services.size()) file << ";";
         }
-        return records;
+        file << "\n";
     }
 
-    void endSession(const std::string& username) {
-        int minutes;
+    void startCafeSession(const std::string& username) {
+        std::vector<ServiceEntry> services = {
+            {"Internet Browsing", 0.03, 0, 0.0},
+            {"Gaming",            0.08, 0, 0.0},
+            {"Printing",          0.12, 0, 0.0},
+            {"Scanning",          0.10, 0, 0.0}
+        };
 
-        std::cout << "\n" << termcolor::cyan;
-        printCenteredSM("===== END SESSION =====");
-        std::cout << termcolor::reset << "\n";
+        int choice = 0;
+        std::vector<ServiceEntry> usedServices;
+        double total = 0.0;
 
-        int pad = (CONSOLE_WIDTH - 10) / 2;
-        std::cout << std::string(pad, ' ') << "Minutes: ";
-        std::cin >> minutes;
+        do {
+            std::cout << "\n" << termcolor::cyan;
+            printCenteredSM("======== CAFE SERVICES ========");
+            std::cout << termcolor::yellow;
+            printCenteredSM("1. Internet Browsing  - $0.03/min");
+            printCenteredSM("2. Gaming             - $0.08/min");
+            printCenteredSM("3. Printing           - $0.12/min");
+            printCenteredSM("4. Scanning           - $0.10/min");
+            printCenteredSM("5. Finish & View Summary");
+            std::cout << termcolor::reset;
+            std::cout << std::string((CONSOLE_WIDTH - 18) / 2, ' ') << "Choose service: ";
+            std::cin >> choice;
 
-        if (minutes <= 0) {
-            std::cout << termcolor::red;
-            printCenteredSM("Invalid minutes entered.");
-            std::cout << termcolor::reset << "\n";
+            if (choice >= 1 && choice <= 4) {
+                ServiceEntry& picked = services[choice - 1];
+                int minutes;
+                std::cout << std::string((CONSOLE_WIDTH - 10) / 2, ' ')
+                          << "Minutes on " << picked.name << ": ";
+                std::cin >> minutes;
+
+                if (minutes > 0) {
+                    double cost = picked.ratePerMinute * minutes;
+                    usedServices.push_back({picked.name, picked.ratePerMinute, minutes, cost});
+                    total += cost;
+                    std::cout << termcolor::green;
+                    printCenteredSM("Added: " + picked.name + " - " + std::to_string(minutes) + " mins - " + formatMoney(cost));
+                    std::cout << termcolor::reset;
+                } else {
+                    std::cout << termcolor::red;
+                    printCenteredSM("Invalid minutes. Not added.");
+                    std::cout << termcolor::reset;
+                }
+
+            } else if (choice != 5) {
+                std::cout << termcolor::red;
+                printCenteredSM("Invalid choice.");
+                std::cout << termcolor::reset;
+            }
+
+        } while (choice != 5);
+
+        if (usedServices.empty()) {
+            std::cout << termcolor::yellow;
+            printCenteredSM("No services used. Session cancelled.");
+            std::cout << termcolor::reset;
             return;
         }
 
-        double cost = minutes * RATE_PER_MINUTE;
-
-        SessionRecord record = {username, minutes, cost, getCurrentDate()};
+        SessionRecord record{username, usedServices, total, getCurrentDate()};
         saveSession(record);
 
-        std::cout << "\n" << termcolor::green;
-        printCenteredSM("=====================================");
-        printCenteredSM("         SESSION SUMMARY             ");
-        printCenteredSM("=====================================");
-        printCenteredSM("User     : " + username);
-        printCenteredSM("Duration : " + std::to_string(minutes) + " minutes");
-        printCenteredSM("Rate     : $0.05 per minute");
-        printCenteredSM("Total    : $" + std::to_string(cost));
-        printCenteredSM("=====================================");
-        std::cout << termcolor::reset << "\n";
+        std::cout << "\n" << termcolor::cyan;
+        printCenteredSM("======== SESSION SUMMARY ========");
+        std::cout << termcolor::yellow;
+        for (const auto& s : usedServices) {
+            std::ostringstream line;
+            line << s.name << " | " << s.minutes << " mins | " << formatMoney(s.cost);
+            printCenteredSM(line.str());
+        }
+        printCenteredSM("---------------------------------");
+        std::cout << termcolor::green;
+        printCenteredSM("TOTAL: " + formatMoney(total));
+        std::cout << termcolor::reset;
     }
 
     void viewSessionHistory(const std::string& username) {
-        std::vector<SessionRecord> records = loadSessions(username);
+        std::ifstream file(SESSION_FILE);
+        std::string line;
+        std::getline(file, line);
 
         std::cout << "\n" << termcolor::cyan;
-        printCenteredSM("===== SESSION HISTORY =====");
-        std::cout << termcolor::reset << "\n";
+        printCenteredSM("======== SESSION HISTORY ========");
+        std::cout << termcolor::reset;
 
-        if (records.empty()) {
+        bool found = false;
+        double grandTotal = 0.0;
+        int sessionNum = 1;
+
+        while (std::getline(file, line)) {
+            std::stringstream ss(line);
+            std::string uname, date, totalCost, servicesStr;
+            std::getline(ss, uname, ',');
+            std::getline(ss, date, ',');
+            std::getline(ss, totalCost, ',');
+            std::getline(ss, servicesStr);
+
+            if (uname == username) {
+                found = true;
+                std::cout << termcolor::yellow;
+                printCenteredSM("--- Session " + std::to_string(sessionNum++) + " | " + date + " ---");
+
+                std::stringstream sv(servicesStr);
+                std::string entry;
+                while (std::getline(sv, entry, ';')) {
+                    std::stringstream se(entry);
+                    std::string name, mins, cost;
+                    std::getline(se, name, '|');
+                    std::getline(se, mins, '|');
+                    std::getline(se, cost, '|');
+                    printCenteredSM(name + " | " + mins + " mins | $" + cost);
+                }
+
+                printCenteredSM("Total: $" + totalCost);
+                printCenteredSM("---------------------------------");
+                grandTotal += std::stod(totalCost);
+            }
+        }
+
+        if (!found) {
             std::cout << termcolor::yellow;
             printCenteredSM("No session history found.");
-            std::cout << termcolor::reset << "\n";
-            return;
+        } else {
+            std::cout << termcolor::green;
+            std::ostringstream gt;
+            gt << std::fixed << std::setprecision(2) << grandTotal;
+            printCenteredSM("All-time Total Spent: $" + gt.str());
         }
-
-        double totalSpent = 0.0;
-        int i = 1;
-        for (const auto& r : records) {
-            std::cout << termcolor::yellow;
-            printCenteredSM("--- Session " + std::to_string(i++) + " ---");
-            printCenteredSM("Date     : " + r.date);
-            printCenteredSM("Duration : " + std::to_string(r.minutes) + " mins");
-            printCenteredSM("Cost     : $" + std::to_string(r.cost));
-            totalSpent += r.cost;
-        }
-
-        std::cout << termcolor::cyan;
-        printCenteredSM("=====================================");
-        printCenteredSM("Total Spent: $" + std::to_string(totalSpent));
-        printCenteredSM("=====================================");
-        std::cout << termcolor::reset << "\n";
+        std::cout << termcolor::reset;
     }
 }

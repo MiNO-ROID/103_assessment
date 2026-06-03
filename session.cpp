@@ -2,7 +2,6 @@
 #include <string>
 #include "session.h"
 #include "logout.h"
-#include "cafe_session.h"
 #include "session_manager.h"
 #include "termcolor.hpp"
 
@@ -27,27 +26,22 @@ namespace v2 {
             printCenteredSession("=====================================");
             std::cout << termcolor::yellow;
             printCenteredSession("1. Start Cafe Session");
-            printCenteredSession("2. End Cafe Session");
-            printCenteredSession("3. View Session History");
-            printCenteredSession("4. Logout");
+            printCenteredSession("2. View Session History");
+            printCenteredSession("3. Logout");
             std::cout << termcolor::reset;
 
-            int padding = (CONSOLE_WIDTH - 18) / 2;
-            std::cout << std::string(padding, ' ') << "Choose an option: ";
+            std::cout << std::string((CONSOLE_WIDTH - 18) / 2, ' ') << "Choose an option: ";
             std::cin >> choice;
             std::cout << "\n";
 
             switch (choice) {
                 case 1:
-                    v2::startCafeSession();
+                    sessions::startCafeSession(username);
                     break;
                 case 2:
-                    sessions::endSession(username);
-                    break;
-                case 3:
                     sessions::viewSessionHistory(username);
                     break;
-                case 4:
+                case 3:
                     v2::logoutUser();
                     loggedIn = false;
                     break;

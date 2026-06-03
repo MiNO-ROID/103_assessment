@@ -10,11 +10,11 @@ add_executable(103_assessment
         session.cpp
         logout.h
         logout.cpp
-        cafe_session.h
-        cafe_session.cpp
         user_auth.h
         user_auth.cpp
         session_manager.h
         session_manager.cpp
         termcolor.hpp
 )
+
+configure_file(users.csv users.csv COPYONLY)

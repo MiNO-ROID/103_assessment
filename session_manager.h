@@ -4,17 +4,21 @@
 
 namespace sessions {
 
-    struct SessionRecord {
-        std::string username;
+    struct ServiceEntry {
+        std::string name;
+        double ratePerMinute;
         int minutes;
         double cost;
+    };
+
+    struct SessionRecord {
+        std::string username;
+        std::vector<ServiceEntry> services;
+        double totalCost;
         std::string date;
     };
 
-    const double RATE_PER_MINUTE = 0.05;
-
-    void endSession(const std::string& username);
+    void startCafeSession(const std::string& username);
     void viewSessionHistory(const std::string& username);
     void saveSession(const SessionRecord& record);
-    std::vector<SessionRecord> loadSessions(const std::string& username);
 }
