@@ -5,6 +5,7 @@
 #include <string>
 #include <iomanip>
 #include "admin_menu.h"
+#include "admin_auth.h"
 #include "user_auth.h"
 #include "termcolor.hpp"
 
@@ -61,9 +62,9 @@ namespace adminmenu {
             if (u.username == target) {
                 found = true;
                 std::string newUser, newPass;
-                std::cout << std::string((ADMIN_CONSOLE_WIDTH - 24) / 2, ' ') << "New username (enter - to keep): ";
+                std::cout << std::string((ADMIN_CONSOLE_WIDTH - 32) / 2, ' ') << "New username (enter - to keep): ";
                 std::cin >> newUser;
-                std::cout << std::string((ADMIN_CONSOLE_WIDTH - 24) / 2, ' ') << "New password (enter - to keep): ";
+                std::cout << std::string((ADMIN_CONSOLE_WIDTH - 32) / 2, ' ') << "New password (enter - to keep): ";
                 std::cin >> newPass;
 
                 if (newUser != "-") u.username = newUser;
@@ -127,7 +128,7 @@ namespace adminmenu {
         }
 
         std::string line;
-        std::getline(file, line); // skip header
+        std::getline(file, line);
 
         int totalMinutes = 0;
         double totalPrintScanValue = 0.0;
@@ -141,12 +142,10 @@ namespace adminmenu {
             std::getline(ss, totalCost, ',');
             std::getline(ss, servicesStr);
 
-            // track unique usernames
             bool found = false;
             for (const auto& u : usernames) if (u == uname) { found = true; break; }
             if (!found) usernames.push_back(uname);
 
-            // parse each service entry: name|mins|cost
             std::stringstream sv(servicesStr);
             std::string entry;
             while (std::getline(sv, entry, ';')) {
@@ -155,7 +154,6 @@ namespace adminmenu {
                 std::getline(se, name, '|');
                 std::getline(se, mins, '|');
                 std::getline(se, cost, '|');
-
                 if (!mins.empty()) totalMinutes += std::stoi(mins);
                 if ((name == "Printing" || name == "Scanning") && !cost.empty()) {
                     totalPrintScanValue += std::stod(cost);
@@ -173,6 +171,31 @@ namespace adminmenu {
         std::cout << termcolor::reset;
     }
 
+    // ── REGISTER NEW ADMIN ───────────────────────────────────
+    void registerNewAdmin() {
+        std::string username, password;
+
+        std::cout << "\n" << termcolor::cyan;
+        printCenteredA("===== REGISTER NEW ADMIN =====");
+        std::cout << termcolor::reset << "\n";
+
+        std::cout << std::string((ADMIN_CONSOLE_WIDTH - 22) / 2, ' ') << "New admin username: ";
+        std::cin >> username;
+
+        std::cout << std::string((ADMIN_CONSOLE_WIDTH - 22) / 2, ' ') << "New admin password: ";
+        std::cin >> password;
+
+        if (adminauth::registerAdmin(username, password)) {
+            std::cout << termcolor::green;
+            printCenteredA("Admin \"" + username + "\" registered successfully!");
+            std::cout << termcolor::reset;
+        } else {
+            std::cout << termcolor::red;
+            printCenteredA("Admin username already exists.");
+            std::cout << termcolor::reset;
+        }
+    }
+
     // ── ADMIN MENU LOOP ────────────────────────────────────────
     void showAdminMenu(const std::string& adminUsername) {
         int choice;
@@ -188,7 +211,8 @@ namespace adminmenu {
             printCenteredA("2. Edit a User");
             printCenteredA("3. Delete a User");
             printCenteredA("4. View System Stats");
-            printCenteredA("5. Logout");
+            printCenteredA("5. Register New Admin");
+            printCenteredA("6. Logout");
             std::cout << termcolor::reset;
 
             std::cout << std::string((ADMIN_CONSOLE_WIDTH - 18) / 2, ' ') << "Choose an option: ";
@@ -196,11 +220,12 @@ namespace adminmenu {
             std::cout << "\n";
 
             switch (choice) {
-                case 1: listAllUsers();  break;
-                case 2: editUser();      break;
-                case 3: deleteUser();    break;
-                case 4: viewStats();     break;
-                case 5:
+                case 1: listAllUsers();     break;
+                case 2: editUser();         break;
+                case 3: deleteUser();       break;
+                case 4: viewStats();        break;
+                case 5: registerNewAdmin(); break;
+                case 6:
                     std::cout << termcolor::cyan;
                     printCenteredA("Admin logged out.");
                     std::cout << termcolor::reset;
