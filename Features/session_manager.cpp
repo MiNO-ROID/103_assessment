@@ -46,7 +46,7 @@ namespace sessions {
 
         for (size_t i = 0; i < record.services.size(); ++i) {
             const auto& s = record.services[i];
-            file << s.name << "|" << s.minutes << "|"
+            file << s.name << "|" << s.units << "|"
                  << std::fixed << std::setprecision(2) << s.cost;
             if (i + 1 < record.services.size()) file << ";";
         }
@@ -54,11 +54,12 @@ namespace sessions {
     }
 
     void startCafeSession(const std::string& username) {
+        // Internet & Gaming: per minute | Print & Scan: per item
         std::vector<ServiceEntry> services = {
             {"Internet Browsing", 0.03, 0, 0.0},
             {"Gaming",            0.08, 0, 0.0},
-            {"Printing",          0.12, 0, 0.0},
-            {"Scanning",          0.10, 0, 0.0}
+            {"Print",             0.12, 0, 0.0},
+            {"Scan",              0.10, 0, 0.0}
         };
 
         int choice = 0;
@@ -71,8 +72,8 @@ namespace sessions {
             std::cout << termcolor::yellow;
             printCenteredSM("1. Internet Browsing  - $0.03/min");
             printCenteredSM("2. Gaming             - $0.08/min");
-            printCenteredSM("3. Printing           - $0.12/min");
-            printCenteredSM("4. Scanning           - $0.10/min");
+            printCenteredSM("3. Print              - $0.12/page");
+            printCenteredSM("4. Scan               - $0.10/page");
             printCenteredSM("5. Finish & View Summary");
             std::cout << termcolor::reset;
             std::cout << std::string((CONSOLE_WIDTH - 18) / 2, ' ') << "Choose service: ";
@@ -80,21 +81,25 @@ namespace sessions {
 
             if (choice >= 1 && choice <= 4) {
                 ServiceEntry& picked = services[choice - 1];
-                int minutes;
-                std::cout << std::string((CONSOLE_WIDTH - 10) / 2, ' ')
-                          << "Minutes on " << picked.name << ": ";
-                std::cin >> minutes;
+                int units;
 
-                if (minutes > 0) {
-                    double cost = picked.ratePerMinute * minutes;
-                    usedServices.push_back({picked.name, picked.ratePerMinute, minutes, cost});
+                bool isPrintScan = (choice == 3 || choice == 4);
+                std::string unitLabel = isPrintScan ? "pages" : "minutes";
+
+                std::cout << std::string((CONSOLE_WIDTH - 10) / 2, ' ')
+                          << "How many " << unitLabel << " for " << picked.name << ": ";
+                std::cin >> units;
+
+                if (units > 0) {
+                    double cost = picked.ratePerUnit * units;
+                    usedServices.push_back({picked.name, picked.ratePerUnit, units, cost});
                     total += cost;
                     std::cout << termcolor::green;
-                    printCenteredSM("Added: " + picked.name + " - " + std::to_string(minutes) + " mins - " + formatMoney(cost));
+                    printCenteredSM("Added: " + picked.name + " - " + std::to_string(units) + " " + unitLabel + " - " + formatMoney(cost));
                     std::cout << termcolor::reset;
                 } else {
                     std::cout << termcolor::red;
-                    printCenteredSM("Invalid minutes. Not added.");
+                    printCenteredSM("Invalid input. Not added.");
                     std::cout << termcolor::reset;
                 }
 
@@ -120,8 +125,10 @@ namespace sessions {
         printCenteredSM("======== SESSION SUMMARY ========");
         std::cout << termcolor::yellow;
         for (const auto& s : usedServices) {
+            bool isPrintScan = (s.name == "Print" || s.name == "Scan");
+            std::string unitLabel = isPrintScan ? "pages" : "mins";
             std::ostringstream line;
-            line << s.name << " | " << s.minutes << " mins | " << formatMoney(s.cost);
+            line << s.name << " | " << s.units << " " << unitLabel << " | " << formatMoney(s.cost);
             printCenteredSM(line.str());
         }
         printCenteredSM("---------------------------------");
@@ -160,11 +167,13 @@ namespace sessions {
                 std::string entry;
                 while (std::getline(sv, entry, ';')) {
                     std::stringstream se(entry);
-                    std::string name, mins, cost;
+                    std::string name, units, cost;
                     std::getline(se, name, '|');
-                    std::getline(se, mins, '|');
+                    std::getline(se, units, '|');
                     std::getline(se, cost, '|');
-                    printCenteredSM(name + " | " + mins + " mins | $" + cost);
+                    bool isPrintScan = (name == "Print" || name == "Scan");
+                    std::string unitLabel = isPrintScan ? "pages" : "mins";
+                    printCenteredSM(name + " | " + units + " " + unitLabel + " | $" + cost);
                 }
 
                 printCenteredSM("Total: $" + totalCost);

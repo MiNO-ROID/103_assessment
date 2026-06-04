@@ -20,17 +20,19 @@ namespace adminmenu {
         std::cout << std::string(padding, ' ') << text << "\n";
     }
 
-        std::string formatMoneyA(double amount) {
+    std::string formatMoneyA(double amount) {
         std::ostringstream ss;
         ss << std::fixed << std::setprecision(2) << amount;
         return "$" + ss.str();
     }
 
-    // List All User
+    // List All Users — shows User ID | Username
     void listAllUsers() {
         std::vector<auth::User> users = auth::loadUsers();
         std::cout << "\n" << termcolor::cyan;
         printCenteredA("======== ALL USERS ========");
+        printCenteredA("User ID          | Username");
+        printCenteredA("--------------------------");
         std::cout << termcolor::reset;
 
         if (users.empty()) {
@@ -40,52 +42,60 @@ namespace adminmenu {
             return;
         }
 
-        int i = 1;
         for (const auto& u : users) {
             std::cout << termcolor::yellow;
-            printCenteredA(std::to_string(i++) + ". " + u.username);
+            std::string row = u.id + " | " + u.username;
+            printCenteredA(row);
         }
         std::cout << termcolor::reset;
     }
 
-    // Edit User
+    // Edit User — enter numeric ID, app shows current name, admin enters new name
     void editUser() {
         std::vector<auth::User> users = auth::loadUsers();
         listAllUsers();
 
-        std::string target;
-        std::cout << std::string((ADMIN_CONSOLE_WIDTH - 24) / 2, ' ') << "Enter username to edit: ";
-        std::cin >> target;
+        std::string idNum;
+        std::cout << "\n" << std::string((ADMIN_CONSOLE_WIDTH - 26) / 2, ' ') << "Enter User ID number: ";
+        std::cin >> idNum;
+
+        std::string fullId = "USR-" + idNum;
 
         bool found = false;
         for (auto& u : users) {
-            if (u.username == target) {
+            if (u.id == fullId) {
                 found = true;
-                std::string newUser, newPass;
-                std::cout << std::string((ADMIN_CONSOLE_WIDTH - 32) / 2, ' ') << "New username (enter - to keep): ";
-                std::cin >> newUser;
-                std::cout << std::string((ADMIN_CONSOLE_WIDTH - 32) / 2, ' ') << "New password (enter - to keep): ";
-                std::cin >> newPass;
-
-                if (newUser != "-") u.username = newUser;
-                if (newPass != "-") u.password = newPass;
-
-                auth::saveUsers(users);
-                std::cout << termcolor::green;
-                printCenteredA("User updated successfully.");
+                std::cout << termcolor::cyan;
+                printCenteredA("Current username: " + u.username);
                 std::cout << termcolor::reset;
+
+                std::string newUser;
+                std::cout << std::string((ADMIN_CONSOLE_WIDTH - 24) / 2, ' ') << "Enter new username: ";
+                std::cin >> newUser;
+
+                if (!newUser.empty() && newUser != "-") {
+                    u.username = newUser;
+                    auth::saveUsers(users);
+                    std::cout << termcolor::green;
+                    printCenteredA("Username updated successfully.");
+                    std::cout << termcolor::reset;
+                } else {
+                    std::cout << termcolor::yellow;
+                    printCenteredA("No changes made.");
+                    std::cout << termcolor::reset;
+                }
                 break;
             }
         }
 
         if (!found) {
             std::cout << termcolor::red;
-            printCenteredA("User not found.");
+            printCenteredA("User ID not found.");
             std::cout << termcolor::reset;
         }
     }
 
-    // Delete User
+    // Delete User — still by username for safety
     void deleteUser() {
         std::vector<auth::User> users = auth::loadUsers();
         listAllUsers();
@@ -117,7 +127,7 @@ namespace adminmenu {
         }
     }
 
-    // View Stat
+    // View Stats
     void viewStats() {
         std::ifstream file(SESSION_FILE_ADMIN);
         if (!file.is_open()) {
@@ -155,7 +165,7 @@ namespace adminmenu {
                 std::getline(se, mins, '|');
                 std::getline(se, cost, '|');
                 if (!mins.empty()) totalMinutes += std::stoi(mins);
-                if ((name == "Printing" || name == "Scanning") && !cost.empty()) {
+                if ((name == "Print" || name == "Scan") && !cost.empty()) {
                     totalPrintScanValue += std::stod(cost);
                 }
             }
@@ -171,7 +181,7 @@ namespace adminmenu {
         std::cout << termcolor::reset;
     }
 
-    // Register New User
+    // Register New Admin
     void registerNewAdmin() {
         std::string username, password;
 

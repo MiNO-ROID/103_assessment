@@ -5,6 +5,7 @@
 #include <string>
 #include <iomanip>
 #include <cctype>
+#include <random>
 #include "../Header/user_auth.h"
 
 const std::string USER_FILE = "../CSV/users.csv";
@@ -42,20 +43,22 @@ namespace auth {
         }
     }
 
-    // Generate ID
+    // Generate random 8-digit USR- ID, guaranteed unique
     std::string generateId(const std::vector<User>& users) {
-        int maxNum = 0;
-        for (const auto& u : users) {
-            if (u.id.substr(0, 4) == "USR-") {
-                try {
-                    int num = std::stoi(u.id.substr(4));
-                    if (num > maxNum) maxNum = num;
-                } catch (...) {}
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(10000000, 99999999);
+
+        std::string newId;
+        bool unique = false;
+        while (!unique) {
+            newId = "USR-" + std::to_string(dist(gen));
+            unique = true;
+            for (const auto& u : users) {
+                if (u.id == newId) { unique = false; break; }
             }
         }
-        std::ostringstream ss;
-        ss << "USR-" << std::setw(4) << std::setfill('0') << (maxNum + 1);
-        return ss.str();
+        return newId;
     }
 
     // Pass Val

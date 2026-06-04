@@ -6,8 +6,8 @@ namespace sessions {
 
     struct ServiceEntry {
         std::string name;
-        double ratePerMinute;
-        int minutes;
+        double ratePerUnit; // per minute for time-based, per item for print/scan
+        int units;          // minutes OR count
         double cost;
     };
 
