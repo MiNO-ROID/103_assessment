@@ -20,13 +20,13 @@ namespace adminmenu {
         std::cout << std::string(padding, ' ') << text << "\n";
     }
 
-    std::string formatMoneyA(double amount) {
+        std::string formatMoneyA(double amount) {
         std::ostringstream ss;
         ss << std::fixed << std::setprecision(2) << amount;
         return "$" + ss.str();
     }
 
-    // ── LIST ALL USERS ─────────────────────────────────────────
+    // List All User
     void listAllUsers() {
         std::vector<auth::User> users = auth::loadUsers();
         std::cout << "\n" << termcolor::cyan;
@@ -48,7 +48,7 @@ namespace adminmenu {
         std::cout << termcolor::reset;
     }
 
-    // ── EDIT USER ──────────────────────────────────────────────
+    // Edit User
     void editUser() {
         std::vector<auth::User> users = auth::loadUsers();
         listAllUsers();
@@ -85,7 +85,7 @@ namespace adminmenu {
         }
     }
 
-    // ── DELETE USER ────────────────────────────────────────────
+    // Delete User
     void deleteUser() {
         std::vector<auth::User> users = auth::loadUsers();
         listAllUsers();
@@ -117,7 +117,7 @@ namespace adminmenu {
         }
     }
 
-    // ── VIEW STATS ─────────────────────────────────────────────
+    // View Stat
     void viewStats() {
         std::ifstream file(SESSION_FILE_ADMIN);
         if (!file.is_open()) {
@@ -171,7 +171,7 @@ namespace adminmenu {
         std::cout << termcolor::reset;
     }
 
-    // ── REGISTER NEW ADMIN ───────────────────────────────────
+    // Register New User
     void registerNewAdmin() {
         std::string username, password;
 
@@ -196,7 +196,7 @@ namespace adminmenu {
         }
     }
 
-    // ── ADMIN MENU LOOP ────────────────────────────────────────
+    // Admin Menu Loop
     void showAdminMenu(const std::string& adminUsername) {
         int choice;
         bool loggedIn = true;
