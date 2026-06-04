@@ -1,6 +1,6 @@
 #include <iostream>
-#include "logout.h"
-#include "termcolor.hpp"
+#include "../Header/logout.h"
+#include "../termcolor.hpp"
 
 using namespace std;
 

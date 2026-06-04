@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
-#include "session.h"
-#include "logout.h"
-#include "session_manager.h"
-#include "termcolor.hpp"
+#include "../Header/session.h"
+#include "../Header/logout.h"
+#include "../Header/session_manager.h"
+#include "../termcolor.hpp"
 
 const int CONSOLE_WIDTH = 80;
 

@@ -1,11 +1,11 @@
 #include <iostream>
 #include <string>
-#include "menu.h"
-#include "termcolor.hpp"
-#include "user_auth.h"
-#include "session.h"
-#include "admin_auth.h"
-#include "admin_menu.h"
+#include "../Header/menu.h"
+#include "../termcolor.hpp"
+#include "../Header/user_auth.h"
+#include "../Header/session.h"
+#include "../Header/admin_auth.h"
+#include "../Header/admin_menu.h"
 
 using namespace std;
 
