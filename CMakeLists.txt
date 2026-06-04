@@ -18,5 +18,4 @@ target_include_directories(103_assessment PRIVATE
         ${CMAKE_SOURCE_DIR}/Header
 )
 
-# Copy entire CSV folder to build directory
 file(COPY ${CMAKE_SOURCE_DIR}/CSV DESTINATION ${CMAKE_BINARY_DIR})
