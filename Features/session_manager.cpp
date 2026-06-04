@@ -6,7 +6,7 @@
 #include <ctime>
 #include <iomanip>
 #include "../Header/session_manager.h"
-#include "../termcolor.hpp"
+#include "../Header/termcolor.hpp"
 
 const std::string SESSION_FILE = "sessions.csv";
 const int CONSOLE_WIDTH = 80;
