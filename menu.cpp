@@ -70,7 +70,7 @@ void registerUser() {
     printCenteredNoEnd("Enter username: ");
     cin >> username;
 
-    // Password rules hint
+    // Password rules
     cout << termcolor::yellow;
     printCentered("Password must have:");
     printCentered("  - At least 8 characters");
@@ -98,7 +98,6 @@ void registerUser() {
         cout << termcolor::green;
         printCentered("Registration successful!");
         printCentered("Your User ID is: " + newId);
-        printCentered("Please save your ID. You may need it later.");
         cout << termcolor::reset << "\n";
     } else {
         cout << termcolor::red;

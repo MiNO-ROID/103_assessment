@@ -16,7 +16,7 @@ namespace adminauth {
         if (!file.is_open()) return admins;
 
         std::string line;
-        std::getline(file, line); // skip header
+        std::getline(file, line);
 
         while (std::getline(file, line)) {
             std::stringstream ss(line);
@@ -39,7 +39,7 @@ namespace adminauth {
     bool registerAdmin(const std::string& username, const std::string& password) {
         auto admins = loadAdmins();
 
-        // Check if username already exists
+        // Check if username exist
         for (const auto& a : admins) {
             if (a.first == username) return false;
         }

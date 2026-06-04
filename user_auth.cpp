@@ -15,7 +15,7 @@ namespace auth {
         std::vector<User> users;
         std::ifstream file(USER_FILE);
         std::string line;
-        std::getline(file, line); // skip header
+        std::getline(file, line);
 
         while (std::getline(file, line)) {
             std::stringstream ss(line);
@@ -42,7 +42,7 @@ namespace auth {
         }
     }
 
-    // Generate next ID e.g. USR-0001, USR-0002
+    // Generate ID
     std::string generateId(const std::vector<User>& users) {
         int maxNum = 0;
         for (const auto& u : users) {
@@ -58,7 +58,7 @@ namespace auth {
         return ss.str();
     }
 
-    // Password validation: min 8 chars, 1 uppercase, 1 number, 1 special char
+    // Pass Val
     PasswordValidation validatePassword(const std::string& password) {
         if (password.length() < 8)
             return {false, "Password must be at least 8 characters."};
