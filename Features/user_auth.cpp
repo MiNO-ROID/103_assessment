@@ -43,7 +43,7 @@ namespace auth {
         }
     }
 
-    // Generate random 8-digit USR- ID, guaranteed unique
+    // Generate random ID
     std::string generateId(const std::vector<User>& users) {
         std::random_device rd;
         std::mt19937 gen(rd());

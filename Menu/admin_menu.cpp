@@ -26,7 +26,7 @@ namespace adminmenu {
         return "$" + ss.str();
     }
 
-    // List All Users — shows User ID | Username
+    // Show Usr ID | Name
     void listAllUsers() {
         std::vector<auth::User> users = auth::loadUsers();
         std::cout << "\n" << termcolor::cyan;
@@ -50,7 +50,7 @@ namespace adminmenu {
         std::cout << termcolor::reset;
     }
 
-    // Edit User — enter numeric ID, app shows current name, admin enters new name
+    // Enter ID
     void editUser() {
         std::vector<auth::User> users = auth::loadUsers();
         listAllUsers();
@@ -95,7 +95,7 @@ namespace adminmenu {
         }
     }
 
-    // Delete User — still by username for safety
+    // Username For safety
     void deleteUser() {
         std::vector<auth::User> users = auth::loadUsers();
         listAllUsers();
