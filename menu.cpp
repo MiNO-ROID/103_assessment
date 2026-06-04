@@ -30,7 +30,6 @@ void showTitle() {
                        \__ \ ' <  \ V /| |__ | || .` | _|
                        |___/_|\_\  |_| |____|___|_|\_|___|
 )";
-
     cout << termcolor::cyan << blah << termcolor::reset << endl;
     cout << "\n";
     cout << termcolor::yellow;
@@ -71,12 +70,35 @@ void registerUser() {
     printCenteredNoEnd("Enter username: ");
     cin >> username;
 
-    printCenteredNoEnd("Enter password: ");
-    cin >> password;
+    // Password rules hint
+    cout << termcolor::yellow;
+    printCentered("Password must have:");
+    printCentered("  - At least 8 characters");
+    printCentered("  - At least 1 uppercase letter");
+    printCentered("  - At least 1 number");
+    printCentered("  - At least 1 special character (!@#$% etc)");
+    cout << termcolor::reset << "\n";
 
-    if (auth::registerUser(username, password)) {
+    while (true) {
+        printCenteredNoEnd("Enter password: ");
+        cin >> password;
+
+        auth::PasswordValidation result = auth::validatePassword(password);
+        if (!result.valid) {
+            cout << termcolor::red;
+            printCentered("Invalid: " + result.error);
+            cout << termcolor::reset;
+            continue;
+        }
+        break;
+    }
+
+    string newId;
+    if (auth::registerUser(username, password, newId)) {
         cout << termcolor::green;
-        printCentered("Registration successful! You can now login.");
+        printCentered("Registration successful!");
+        printCentered("Your User ID is: " + newId);
+        printCentered("Please save your ID. You may need it later.");
         cout << termcolor::reset << "\n";
     } else {
         cout << termcolor::red;
