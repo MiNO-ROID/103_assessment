@@ -3,6 +3,7 @@
 #include "../Header/menu.h"
 #include "../Header/termcolor.hpp"
 #include "../Header/user_auth.h"
+#include "../Header/password.h"
 #include "../Header/session.h"
 #include "../Header/admin_auth.h"
 #include "../Header/admin_menu.h"
@@ -69,6 +70,19 @@ void registerUser() {
 
     printCenteredNoEnd("Enter username: ");
     cin >> username;
+
+   // Generate Pass
+    printCentered("Tip: Press G to Generate + Enter to auto-generate a password.");
+    printCenteredNoEnd("Enter password: ");
+    cin >> password;
+
+    if (password == "G" || password == "g") {
+        password = passgen::generatePassword();
+        cout << termcolor::green;
+        printCentered("Generated password: " + password);
+        printCentered("Please save this password!");
+        cout << termcolor::reset << "\n";
+    }
 
     // Password rules
     cout << termcolor::yellow;

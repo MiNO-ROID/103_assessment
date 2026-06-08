@@ -12,6 +12,8 @@ add_executable(103_assessment
         Features/user_auth.cpp
         Features/session_manager.cpp
         Features/admin_auth.cpp
+        Features/password.cpp
+        Header/password.h
 )
 
 target_include_directories(103_assessment PRIVATE
